@@ -1,0 +1,1337 @@
+<title>Planlama</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#FAF8F5; --surface:#FFFFFF; --surface-2:#F1EEE7; --border:#E4DFD5;
+  --text:#221F1A; --text-muted:#6E685E; --text-faint:#A69C8D;
+  --accent-kg:#3B6E71; --accent-kg-soft:#E3EEEC; --accent-kg-text:#2C5457;
+  --accent-mv:#B4792E; --accent-mv-soft:#F6EAD8; --accent-mv-text:#8C5C1E;
+  --accent:#3B6E71; --danger:#B3452F; --danger-soft:#F7E6E0; --success:#3B7A57;
+  --shadow:0 1px 2px rgba(30,25,15,.06), 0 6px 20px -8px rgba(30,25,15,.14);
+  --radius-s:8px; --radius-m:14px; --radius-l:20px;
+  --font-display:'Newsreader',Georgia,serif; --font-body:'Public Sans',-apple-system,'Segoe UI',sans-serif; --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --heat-kg-1:#CFE4E2; --heat-kg-2:#9CC7C3; --heat-kg-3:#5F9C97; --heat-kg-4:#2E5B58;
+  --heat-mv-1:#F0DDBA; --heat-mv-2:#E2BB80; --heat-mv-3:#C68F49; --heat-mv-4:#8C5C1E;
+  --accent-mb:#4A5D78; --accent-mb-soft:#E6EAF0; --accent-mb-text:#37455A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141310; --surface:#1C1A16; --surface-2:#242119; --border:#37332A;
+    --text:#F1ECE3; --text-muted:#A69C8D; --text-faint:#726A5D;
+    --accent-kg:#72B5AF; --accent-kg-soft:#213432; --accent-kg-text:#8FCAC4;
+    --accent-mv:#E3AA5C; --accent-mv-soft:#332714; --accent-mv-text:#EBBD7E;
+    --accent:#72B5AF; --danger:#E0876A; --danger-soft:#3A241D; --success:#83C79E;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -10px rgba(0,0,0,.55);
+    --heat-kg-1:#203230; --heat-kg-2:#2C4C48; --heat-kg-3:#3F7873; --heat-kg-4:#68B0AA;
+    --heat-mv-1:#2E2416; --heat-mv-2:#4A371A; --heat-mv-3:#82601F; --heat-mv-4:#D9A257;
+    --accent-mb:#8CA6C7; --accent-mb-soft:#212B38; --accent-mb-text:#A9C1DE;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141310; --surface:#1C1A16; --surface-2:#242119; --border:#37332A;
+  --text:#F1ECE3; --text-muted:#A69C8D; --text-faint:#726A5D;
+  --accent-kg:#72B5AF; --accent-kg-soft:#213432; --accent-kg-text:#8FCAC4;
+  --accent-mv:#E3AA5C; --accent-mv-soft:#332714; --accent-mv-text:#EBBD7E;
+  --accent:#72B5AF; --danger:#E0876A; --danger-soft:#3A241D; --success:#83C79E;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -10px rgba(0,0,0,.55);
+  --heat-kg-1:#203230; --heat-kg-2:#2C4C48; --heat-kg-3:#3F7873; --heat-kg-4:#68B0AA;
+  --heat-mv-1:#2E2416; --heat-mv-2:#4A371A; --heat-mv-3:#82601F; --heat-mv-4:#D9A257;
+  --accent-mb:#8CA6C7; --accent-mb-soft:#212B38; --accent-mb-text:#A9C1DE;
+}
+*{box-sizing:border-box;}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important;} }
+body{ background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+h1,h2,h3{ font-family:var(--font-display); font-weight:600; text-wrap:balance; color:var(--text); margin:0; }
+p{ margin:0; }
+a{ color:var(--accent); }
+input,textarea,button{ font-family:inherit; font-size:inherit; color:inherit; }
+button{ cursor:pointer; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.mono{ font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+
+/* ---- layout shell ---- */
+.shell{ display:flex; min-height:100vh; }
+.sidebar{ width:250px; flex-shrink:0; display:flex; flex-direction:column; gap:26px; padding:26px 20px; border-right:1px solid var(--border); background:var(--surface); position:sticky; top:0; height:100vh; overflow-y:auto; }
+.brand{ display:flex; align-items:center; gap:10px; }
+.brand-mark{ width:34px; height:34px; border-radius:9px; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:15px; }
+.brand-name{ font-family:var(--font-display); font-weight:600; font-size:17px; }
+.greeting{ font-size:13.5px; color:var(--text-muted); line-height:1.55; padding-bottom:18px; border-bottom:1px solid var(--border); }
+.greeting strong{ color:var(--text); font-weight:600; }
+.greet-date{ font-size:12px; color:var(--text-faint); }
+.nav{ display:flex; flex-direction:column; gap:4px; flex:1; }
+.navitem{ display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:var(--radius-s); border:none; background:transparent; color:var(--text-muted); text-align:left; font-weight:500; font-size:14px; }
+.navitem svg{ flex-shrink:0; }
+.navitem:hover{ background:var(--surface-2); color:var(--text); }
+.navitem.active{ background:var(--accent-kg-soft); color:var(--accent-kg-text); }
+.sidebar-foot{ font-size:11.5px; color:var(--text-faint); }
+.badge-local{ background:var(--surface-2); padding:4px 8px; border-radius:20px; }
+.content{ flex:1; min-width:0; padding:30px 34px 100px; max-width:980px; }
+.mobile-topbar{ display:none; }
+.bottomnav{ display:none; }
+@media (max-width:880px){
+  .sidebar{ display:none; }
+  .content{ padding:18px 16px 92px; }
+  .mobile-topbar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+  .bottomnav{ display:flex; position:fixed; bottom:0; left:0; right:0; background:var(--surface); border-top:1px solid var(--border); justify-content:space-around; padding:7px 4px calc(7px + env(safe-area-inset-bottom)); z-index:20; }
+  .bnitem{ display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none; color:var(--text-faint); font-size:11px; padding:4px 10px; border-radius:10px; }
+  .bnitem.active{ color:var(--accent-kg-text); }
+}
+
+/* ---- login ---- */
+.login-screen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+.login-card{ width:100%; max-width:380px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-l); padding:36px 30px; box-shadow:var(--shadow); text-align:center; }
+.login-mark{ width:48px; height:48px; border-radius:13px; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:19px; margin:0 auto 18px; }
+.login-title{ font-size:24px; margin-bottom:8px; }
+.login-sub{ color:var(--text-muted); font-size:13.5px; margin-bottom:26px; }
+.login-card form{ display:flex; flex-direction:column; gap:14px; text-align:left; }
+
+/* ---- sections ---- */
+.section-head{ margin-bottom:18px; }
+.section-title{ font-size:23px; }
+.section-sub{ color:var(--text-muted); font-size:13px; margin-top:4px; }
+.pillrow{ display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:20px; }
+.pill{ flex-shrink:0; border:1px solid var(--border); background:var(--surface); color:var(--text-muted); padding:8px 15px; border-radius:20px; font-size:13.5px; font-weight:500; white-space:nowrap; }
+.pill.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.toolbar{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+
+/* ---- buttons / inputs ---- */
+.btn{ display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--surface); color:var(--text); padding:9px 15px; border-radius:var(--radius-s); font-size:13.5px; font-weight:600; }
+.btn:hover{ background:var(--surface-2); }
+.btn-primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.btn-primary:hover{ filter:brightness(1.07); }
+.btn-ghost{ background:transparent; }
+.btn-danger{ background:var(--danger); border-color:var(--danger); color:#fff; }
+.btn-block{ width:100%; justify-content:center; }
+.btn-sm{ padding:7px 12px; font-size:12.5px; }
+.btn-xs{ padding:5px 9px; font-size:11.5px; border-radius:7px; }
+.btn-back{ border:none; background:none; color:var(--text-muted); font-weight:600; font-size:13.5px; display:flex; align-items:center; gap:4px; padding:4px 0; }
+.icon-btn{ border:none; background:none; color:var(--text-faint); padding:5px; border-radius:7px; display:flex; }
+.icon-btn:hover{ background:var(--danger-soft); color:var(--danger); }
+.label{ font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.03em; display:block; margin-bottom:6px; }
+.input{ width:100%; border:1px solid var(--border); background:var(--bg); color:var(--text); padding:10px 12px; border-radius:var(--radius-s); }
+.input:focus{ border-color:var(--accent); }
+.input-sm{ padding:7px 10px; font-size:13px; }
+.input-xs{ padding:5px 8px; font-size:12px; width:76px; }
+.textarea{ resize:vertical; font-family:var(--font-mono); font-size:12.5px; }
+.form-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+@media (max-width:520px){ .form-row{ grid-template-columns:1fr; } }
+.quickadd{ display:flex; gap:8px; margin-top:12px; }
+.quickadd .input{ flex:1; }
+
+/* ---- cards / grids ---- */
+.grid{ display:grid; gap:14px; }
+.cards-2{ grid-template-columns:repeat(2,1fr); }
+@media (max-width:640px){ .cards-2{ grid-template-columns:1fr; } }
+.card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); padding:18px; box-shadow:var(--shadow); }
+.card-wide{ margin-bottom:16px; }
+.card-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+.card-head h3{ font-size:15.5px; display:flex; align-items:center; gap:8px; }
+.card h3{ font-size:15.5px; margin-bottom:10px; }
+.card-meta{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-muted); margin-top:6px; }
+.card-meta.eta{ justify-content:flex-start; color:var(--text-faint); font-style:italic; font-family:var(--font-display); }
+.progress{ height:7px; border-radius:5px; background:var(--surface-2); overflow:hidden; }
+.progress-bar{ height:100%; background:var(--accent-kg); border-radius:5px; }
+.progress-mv .progress-bar, .progress.progress-mv .progress-bar{ background:var(--accent-mv); }
+.progress-thin{ height:5px; margin-top:5px; }
+.stat-line{ font-size:14px; color:var(--text-muted); margin-bottom:6px; }
+.stat-line strong{ color:var(--text); font-family:var(--font-mono); }
+.empty-state{ border:1px dashed var(--border); border-radius:var(--radius-m); padding:32px 20px; text-align:center; color:var(--text-muted); }
+.empty-state h4{ font-family:var(--font-display); font-size:16px; color:var(--text); margin-bottom:6px; font-weight:600; }
+.empty-state p{ font-size:13px; }
+.loading-block{ padding:40px 0; text-align:center; color:var(--text-faint); font-style:italic; font-family:var(--font-display); }
+
+/* ---- toggles / chips ---- */
+.toggle-row{ display:flex; gap:10px; margin:14px 0; flex-wrap:wrap; }
+.toggle-btn{ display:flex; align-items:center; gap:6px; border:1px solid var(--border); background:var(--bg); padding:9px 16px; border-radius:20px; font-weight:600; font-size:13.5px; color:var(--text-muted); }
+.toggle-btn.active-yes{ background:var(--accent-kg-soft); border-color:var(--accent-kg); color:var(--accent-kg-text); }
+.toggle-btn.active-no{ background:var(--danger-soft); border-color:var(--danger); color:var(--danger); }
+.strip-label{ font-size:11.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.03em; margin:14px 0 8px; }
+.ministrip{ display:flex; gap:6px; }
+.minidot{ width:15px; height:15px; border-radius:5px; background:var(--surface-2); border:1px solid var(--border); }
+.minidot.on{ background:var(--accent-kg); border-color:var(--accent-kg); }
+.chip{ border:1px solid var(--border); background:var(--bg); color:var(--text-muted); padding:7px 12px; border-radius:9px; font-size:12.5px; font-weight:600; }
+.chip-on{ background:var(--accent-mv-soft); border-color:var(--accent-mv); color:var(--accent-mv-text); }
+.prayer-grid{ display:flex; flex-direction:column; gap:8px; }
+.prayer-row{ display:flex; align-items:center; gap:10px; }
+.prayer-name{ width:64px; font-size:13.5px; font-weight:600; flex-shrink:0; }
+.week-grid{ display:flex; justify-content:space-between; align-items:flex-end; height:70px; gap:6px; }
+.week-col{ display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; justify-content:flex-end; }
+.week-bar{ width:100%; max-width:22px; background:var(--accent-mv); border-radius:4px 4px 2px 2px; min-height:3px; }
+.week-day{ font-size:10.5px; color:var(--text-faint); order:2; }
+
+/* ---- timer / sessions ---- */
+.timer-display{ font-family:var(--font-mono); font-size:38px; font-weight:600; text-align:center; padding:14px 0; letter-spacing:.02em; }
+.session-list{ display:flex; flex-direction:column; gap:6px; margin-top:12px; border-top:1px solid var(--border); padding-top:10px; }
+.session-item{ display:flex; justify-content:space-between; font-size:13px; color:var(--text-muted); }
+.session-item span:last-child{ font-family:var(--font-mono); color:var(--text); }
+
+/* ---- folders ---- */
+.folder-card{ cursor:pointer; }
+.folder-card:hover{ border-color:var(--accent-mv); }
+.detail-head{ display:flex; flex-direction:column; gap:2px; margin-bottom:16px; }
+.item-list{ display:flex; flex-direction:column; gap:10px; }
+.item-row{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-s); padding:13px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.item-info{ flex:1; min-width:180px; }
+.item-title{ font-weight:600; font-size:14px; display:flex; align-items:center; gap:6px; }
+.item-link{ color:var(--accent-mv); display:inline-flex; }
+.item-meta{ font-size:11.5px; color:var(--text-faint); }
+.item-actions{ display:flex; align-items:center; gap:6px; flex-shrink:0; }
+
+/* ---- modal / toast ---- */
+.modal-backdrop{ position:fixed; inset:0; background:rgba(20,17,12,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:50; }
+.modal{ background:var(--surface); border-radius:var(--radius-l); padding:24px; width:100%; max-width:420px; max-height:88vh; overflow-y:auto; box-shadow:var(--shadow); }
+.modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.modal-head h3{ font-size:18px; }
+.modal form{ display:flex; flex-direction:column; gap:14px; }
+.modal-actions{ display:flex; gap:10px; justify-content:flex-end; }
+.modal-hint{ font-size:12.5px; color:var(--text-muted); margin-bottom:12px; line-height:1.5; }
+.modal-hint code{ background:var(--surface-2); padding:1px 5px; border-radius:4px; font-family:var(--font-mono); font-size:11.5px; }
+.muted{ color:var(--text-faint); }
+.toast-root{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; gap:8px; z-index:60; align-items:center; }
+.toast{ background:var(--text); color:var(--bg); padding:10px 18px; border-radius:10px; font-size:13px; opacity:0; transform:translateY(8px); transition:opacity .25s, transform .25s; box-shadow:var(--shadow); }
+.toast.show{ opacity:1; transform:translateY(0); }
+
+/* ---- stats ---- */
+.stats-subhead{ font-size:16px; margin:26px 0 12px; display:flex; align-items:center; gap:8px; }
+.stats-subhead.accent-kg{ color:var(--accent-kg-text); }
+.stats-subhead.accent-mv{ color:var(--accent-mv-text); }
+.stats-subhead.accent-mb{ color:var(--accent-mb-text); }
+.progress-mb .progress-bar{ background:var(--accent-mb); }
+.bar-mb{ background:var(--accent-mb); }
+.cat-row{ margin-bottom:13px; }
+.cat-row:last-child{ margin-bottom:0; }
+.cat-row-head{ display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px; }
+.cat-row-head span:last-child{ font-family:var(--font-mono); color:var(--text-muted); }
+.stats-subhead:first-of-type{ margin-top:4px; }
+.stat-grid{ grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); margin-bottom:16px; }
+.stat-tile{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-m); padding:15px 16px; display:flex; flex-direction:column; gap:5px; }
+.stat-val{ font-family:var(--font-mono); font-size:21px; font-weight:600; }
+.stat-label{ font-size:11.5px; color:var(--text-muted); line-height:1.3; }
+.heat-block{ margin-bottom:8px; }
+.heatmap-scroll{ overflow-x:auto; padding-bottom:6px; }
+.heatmap-grid{ display:grid; grid-template-rows:repeat(7,11px); grid-auto-flow:column; grid-auto-columns:11px; gap:3px; width:max-content; }
+.heat-cell{ width:11px; height:11px; border-radius:3px; background:var(--surface-2); }
+.heat-kg.lvl-1{ background:var(--heat-kg-1); } .heat-kg.lvl-2{ background:var(--heat-kg-2); } .heat-kg.lvl-3{ background:var(--heat-kg-3); } .heat-kg.lvl-4{ background:var(--heat-kg-4); }
+.heat-mv.lvl-1{ background:var(--heat-mv-1); } .heat-mv.lvl-2{ background:var(--heat-mv-2); } .heat-mv.lvl-3{ background:var(--heat-mv-3); } .heat-mv.lvl-4{ background:var(--heat-mv-4); }
+.heat-foot{ font-size:12px; color:var(--text-muted); margin-top:8px; }
+.heat-foot strong{ color:var(--text); font-family:var(--font-mono); }
+</style>
+
+<div id="app"></div>
+<div id="modalRoot"></div>
+<div id="toastRoot" class="toast-root"></div>
+
+<script>
+/* ============ yardımcı fonksiyonlar ============ */
+const TR_MONTHS=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const TR_MONTHS_SHORT=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+function pad(n){ return String(n).padStart(2,'0'); }
+function fmtDate(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function todayStr(){ return fmtDate(new Date()); }
+function parseDateStr(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function daysBetween(a,b){ return Math.round((parseDateStr(b)-parseDateStr(a))/86400000); }
+function addDays(s,n){ const d=parseDateStr(s); d.setDate(d.getDate()+n); return fmtDate(d); }
+function formatTR(s){ const [y,m,d]=s.split('-').map(Number); return `${d} ${TR_MONTHS[m-1]} ${y}`; }
+function formatTRShort(s){ const [y,m,d]=s.split('-').map(Number); return `${d} ${TR_MONTHS_SHORT[m-1]}`; }
+function pctFmt(x){ return Math.round((x||0)*100)+'%'; }
+function escapeHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function deepMerge(a,b){
+  const out={...(a||{})};
+  for(const k in b){
+    if(b[k] && typeof b[k]==='object' && !Array.isArray(b[k]) && a && a[k] && typeof a[k]==='object' && !Array.isArray(a[k])){
+      out[k]=deepMerge(a[k], b[k]);
+    } else { out[k]=b[k]; }
+  }
+  return out;
+}
+function formatTimer(sec){ sec=Math.max(0,sec); const m=Math.floor(sec/60), s=sec%60; return `${pad(m)}:${pad(s)}`; }
+
+/* ============ ikonlar (satır içi SVG) ============ */
+function icon(name, size){
+  size = size||18;
+  const paths = {
+    book:'<path d="M3 5c2-1 5-1 7 1c2-2 5-2 7-1v10c-2-1-5-1-7 1c-2-2-5-2-7-1z"/>',
+    prayer:'<path d="M10 3a4 4 0 0 1 4 4v2H6V7a4 4 0 0 1 4-4z"/><rect x="4" y="9" width="12" height="7" rx="0.5"/><line x1="10" y1="9" x2="10" y2="16"/>',
+    stats:'<line x1="4" y1="16" x2="4" y2="10"/><line x1="9" y1="16" x2="9" y2="6"/><line x1="14" y1="16" x2="14" y2="12"/>',
+    dumbbell:'<rect x="2" y="8" width="3" height="5" rx="1"/><rect x="15" y="8" width="3" height="5" rx="1"/><line x1="5" y1="10.5" x2="15" y2="10.5"/>',
+    pen:'<path d="M4 16l1-4 9-9 3 3-9 9-4 1z"/><line x1="12.5" y1="4.5" x2="15.5" y2="7.5"/>',
+    newspaper:'<rect x="3" y="4" width="14" height="12" rx="1"/><line x1="6" y1="7.5" x2="14" y2="7.5"/><line x1="6" y1="10.5" x2="14" y2="10.5"/><line x1="6" y1="13.5" x2="11" y2="13.5"/>',
+    quran:'<path d="M3 5c2-1 5-1 7 1c2-2 5-2 7-1v10c-2-1-5-1-7 1c-2-2-5-2-7-1z"/><line x1="10" y1="6" x2="10" y2="16"/>',
+    beads:'<path d="M5 14 C6 11 10 7 16 9" fill="none"/><circle cx="5" cy="14" r="1.5"/><circle cx="8" cy="10.2" r="1.5"/><circle cx="12" cy="7.8" r="1.5"/><circle cx="16" cy="9" r="1.5"/>',
+    'folder-book':'<path d="M3 6a1 1 0 0 1 1-1h4l2 2h6a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6z"/>',
+    'folder-play':'<path d="M3 6a1 1 0 0 1 1-1h4l2 2h6a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6z"/><path d="M8.3 9.6l4 2.2-4 2.2z" fill="currentColor" stroke="none"/>',
+    plus:'<line x1="10" y1="4" x2="10" y2="16"/><line x1="4" y1="10" x2="16" y2="10"/>',
+    check:'<path d="M4 10.5l4 4 8-9"/>',
+    close:'<line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/>',
+    trash:'<path d="M4 6h12"/><path d="M8 6V4h4v2"/><path d="M6 6l1 10h6l1-10"/>',
+    'chevron-left':'<path d="M12 4l-6 6 6 6"/>',
+    'chevron-right':'<path d="M8 4l6 6-6 6"/>',
+    clock:'<circle cx="10" cy="10" r="7"/><line x1="10" y1="6.5" x2="10" y2="10"/><line x1="10" y1="10" x2="12.8" y2="11.8"/>',
+    wallet:'<rect x="2" y="6" width="16" height="9.5" rx="1.5"/><circle cx="10.5" cy="10.75" r="2"/><line x1="2" y1="8.7" x2="6" y2="8.7"/>'
+  };
+  return `<svg width="${size}" height="${size}" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${paths[name]||''}</svg>`;
+}
+
+/* ============ yerel depolama yedeği (db capability yoksa) ============ */
+const LocalDB = (()=>{
+  const KEY='hayat_defteri_store_v1';
+  function readAll(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
+  function writeAll(o){ try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){} }
+  function mintId(){ return 'id'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+  function docRef(path){
+    return {
+      id: path.split('/').pop(), path,
+      async get(){ const all=readAll(); const data=all[path]; return { exists: data!==undefined, data:()=>data, id: path.split('/').pop() }; },
+      async set(data){ const all=readAll(); all[path]=JSON.parse(JSON.stringify(data)); writeAll(all); },
+      async update(data){ const all=readAll(); const cur=all[path]||{}; all[path]=deepMerge(cur,data); writeAll(all); },
+      async delete(){ const all=readAll(); Object.keys(all).forEach(k=>{ if(k===path||k.startsWith(path+'/')) delete all[k]; }); writeAll(all); },
+      collection(sub){ return collRef(path+'/'+sub); }
+    };
+  }
+  function collRef(path){
+    return {
+      path,
+      doc(id){ return docRef(path+'/'+(id||mintId())); },
+      async add(data){ const ref=this.doc(); await ref.set(data); return ref; },
+      async get(){
+        const all=readAll(); const prefix=path+'/';
+        const docs = Object.keys(all).filter(k=>k.startsWith(prefix) && k.slice(prefix.length).indexOf('/')===-1)
+          .map(k=>({ id:k.slice(prefix.length), exists:true, data:()=>all[k] }));
+        return { docs, size:docs.length, empty:docs.length===0 };
+      }
+    };
+  }
+  return { doc:docRef, collection:collRef };
+})();
+
+let DB=null, db=null, dbAvailable=false;
+async function initCapabilities(){
+  try{ DB = (window.claude && window.claude.use) ? await window.claude.use('db') : null; }catch(e){ DB=null; }
+  dbAvailable = !!DB;
+  db = DB || LocalDB;
+}
+
+/* ============ klasör konfigürasyonu ============ */
+const FOLDER_CONF = {
+  reading:{ title:'Okumalar', unitLabel:'sayfa', totalField:'totalPages', doneField:'pagesRead', itemTitleLabel:'Kitap adı', totalLabel:'Sayfa sayısı', collection:'readingFolders' },
+  watching:{ title:'İzlemeler', unitLabel:'dk', totalField:'totalMinutes', doneField:'minutesWatched', itemTitleLabel:'Video adı', totalLabel:'Süre (dk)', collection:'watchingFolders' }
+};
+
+/* ============ uygulama durumu ============ */
+const state = {
+  profile: null,
+  view: 'kg', kgTab:'kitap', mvTab:'namaz',
+  openFolder: null,
+  loading: true,
+  statsLoaded: false,
+  data: { books:[], dhikrs:[], readingFolders:[], watchingFolders:[], categories:[], expenses:[], recent:{}, allDays:null }
+};
+let timerState = { running:false, remainingSec:0, goalMin:0, topic:'' };
+let timerInterval = null;
+let _confirmCb = null;
+
+function todayData(){ return state.data.recent[todayStr()] || {}; }
+
+/* ============ veri yükleme ============ */
+async function loadAll(){
+  state.loading = true;
+  if(!state.profile){
+    const profileSnap = await db.doc('meta/profile').get();
+    state.profile = profileSnap.exists ? profileSnap.data() : null;
+  }
+  if(!state.profile){ state.loading=false; render(); return; }
+
+  const [booksSnap, dhikrsSnap, rFoldersSnap, wFoldersSnap, categoriesSnap, expensesSnap] = await Promise.all([
+    db.collection('books').get(),
+    db.collection('dhikrs').get(),
+    db.collection('readingFolders').get(),
+    db.collection('watchingFolders').get(),
+    db.collection('categories').get(),
+    db.collection('expenses').get()
+  ]);
+  state.data.books = booksSnap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||''));
+  state.data.dhikrs = dhikrsSnap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||''));
+  state.data.readingFolders = rFoldersSnap.docs.map(d=>({id:d.id, ...d.data(), items:[]})).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||''));
+  state.data.watchingFolders = wFoldersSnap.docs.map(d=>({id:d.id, ...d.data(), items:[]})).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||''));
+  state.data.categories = categoriesSnap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(a.name||'').localeCompare(b.name||'','tr'));
+  state.data.expenses = expensesSnap.docs.map(d=>({id:d.id, ...d.data()})).sort((a,b)=>(b.date||'').localeCompare(a.date||'') || (b.createdAt||'').localeCompare(a.createdAt||''));
+
+  const last7 = Array.from({length:7},(_,i)=>addDays(todayStr(),-(6-i)));
+  const [last7Snaps] = await Promise.all([
+    Promise.all(last7.map(d=>db.doc('days/'+d).get())),
+    Promise.all(state.data.readingFolders.map(async f=>{ const s=await db.collection(`readingFolders/${f.id}/items`).get(); f.items=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||'')); })),
+    Promise.all(state.data.watchingFolders.map(async f=>{ const s=await db.collection(`watchingFolders/${f.id}/items`).get(); f.items=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||'').localeCompare(b.createdAt||'')); })),
+    Promise.all(state.data.dhikrs.map(async dh=>{ const s=await db.doc(`dhikrs/${dh.id}/entries/${todayStr()}`).get(); dh.todayCount = s.exists ? (s.data().count||0) : 0; }))
+  ]);
+  state.data.recent = {};
+  last7.forEach((d,i)=>{ state.data.recent[d] = last7Snaps[i].exists ? last7Snaps[i].data() : {}; });
+
+  state.loading = false;
+  render();
+}
+
+async function loadStats(){
+  if(state.statsLoaded) return;
+  render(); // ilk yükleme mesajını göster
+  const daysSnap = await db.collection('days').get();
+  const daysObj = {};
+  daysSnap.docs.forEach(d=>{ daysObj[d.id]=d.data(); });
+  state.data.allDays = daysObj;
+  await Promise.all(state.data.dhikrs.map(async dh=>{
+    const s = await db.collection(`dhikrs/${dh.id}/entries`).get();
+    dh.entries = {};
+    s.docs.forEach(d=>{ dh.entries[d.id]=d.data(); });
+  }));
+  state.statsLoaded = true;
+  render();
+}
+
+/* ============ günlük kayıt (days/{date}) ============ */
+async function setDay(patch, dateStr){
+  const date = dateStr || todayStr();
+  const cur = state.data.recent[date] || (state.data.allDays && state.data.allDays[date]) || {};
+  const next = deepMerge(cur, patch);
+  state.data.recent[date] = next;
+  if(state.data.allDays) state.data.allDays[date] = next;
+  render();
+  try{ await db.doc('days/'+date).set(next); }catch(e){ toast('Kaydedilemedi, tekrar dene.'); }
+}
+
+/* ============ toast ============ */
+function toast(msg){
+  const root = document.getElementById('toastRoot');
+  const el = document.createElement('div');
+  el.className='toast'; el.textContent=msg;
+  root.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=>el.remove(),300); }, 2600);
+}
+
+/* ============ modal ============ */
+function openModal(html){
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `<div class="modal-backdrop" id="modalBackdrop"><div class="modal">${html}</div></div>`;
+  document.getElementById('modalBackdrop').addEventListener('click', e=>{ if(e.target.id==='modalBackdrop') closeModal(); });
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+function confirmAction(message, cb){
+  _confirmCb = cb;
+  openModal(`
+    <div class="modal-head"><h3>Emin misin?</h3><button class="icon-btn" data-action="close-modal">${icon('close',16)}</button></div>
+    <p style="color:var(--text-muted);font-size:13.5px;margin-bottom:18px;">${escapeHtml(message)}</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-action="confirm-no">Vazgeç</button>
+      <button class="btn btn-danger" data-action="confirm-yes">${icon('trash',15)} Evet, sil</button>
+    </div>`);
+}
+
+/* ============ kitap ============ */
+async function addBookPages(bookId, delta){
+  const book = state.data.books.find(b=>b.id===bookId); if(!book) return;
+  const newTotal = Math.min(book.totalPages, (book.pagesRead||0)+delta);
+  const applied = newTotal - (book.pagesRead||0);
+  book.pagesRead = newTotal; render();
+  try{ await db.doc('books/'+bookId).update({ pagesRead:newTotal }); }catch(e){ toast('Kaydedilemedi'); return; }
+  if(applied>0) setDay({ bookPages: (todayData().bookPages||0) + applied });
+}
+async function deleteBook(id){
+  state.data.books = state.data.books.filter(b=>b.id!==id); render();
+  try{ await db.doc('books/'+id).delete(); }catch(e){}
+}
+
+/* ============ spor / haber ============ */
+function setSport(val){ setDay({ sport: val }); }
+function setNews(val){ setDay({ news: val }); }
+
+/* ============ yazma ============ */
+function startWriting(){
+  const goal = Math.max(1, parseInt(document.getElementById('writeGoal').value)||30);
+  const topic = (document.getElementById('writeTopic').value||'').trim();
+  timerState = { running:true, remainingSec: goal*60, goalMin: goal, topic };
+  render();
+  timerInterval = setInterval(()=>{
+    timerState.remainingSec--;
+    const disp = document.getElementById('timerDisplay');
+    if(disp) disp.textContent = formatTimer(timerState.remainingSec);
+    if(timerState.remainingSec<=0){ stopWriting(); }
+  },1000);
+}
+async function stopWriting(){
+  clearInterval(timerInterval); timerInterval=null;
+  const elapsedSec = timerState.goalMin*60 - timerState.remainingSec;
+  const minutes = Math.max(1, Math.round(elapsedSec/60));
+  const topic = timerState.topic;
+  timerState = { running:false, remainingSec:0, goalMin:0, topic:'' };
+  render();
+  const d = todayData();
+  const sessions = (d.writingSessions||[]).concat([{ topic, minutes }]);
+  await setDay({ writingMin:(d.writingMin||0)+minutes, writingSessions: sessions });
+}
+
+/* ============ namaz ============ */
+function togglePrayer(vakit, tur){
+  const d = todayData();
+  const cur = d.prayers || {};
+  const v = cur[vakit] || { farz:false, sunnah:false };
+  setDay({ prayers: { ...cur, [vakit]: { ...v, [tur]: !v[tur] } } });
+}
+
+/* ============ kur'an ============ */
+function addQuranPages(val){ if(val>0) setDay({ quranPages:(todayData().quranPages||0)+val }); }
+
+/* ============ zikir ============ */
+async function addDhikrCount(dhikrId, delta){
+  const dh = state.data.dhikrs.find(d=>d.id===dhikrId); if(!dh) return;
+  const newCount = (dh.todayCount||0)+delta;
+  dh.todayCount = newCount; render();
+  try{ await db.doc(`dhikrs/${dhikrId}/entries/${todayStr()}`).set({ count:newCount }); }catch(e){ toast('Kaydedilemedi'); return; }
+  setDay({ dhikrCount:(todayData().dhikrCount||0)+delta });
+}
+async function deleteDhikr(id){
+  state.data.dhikrs = state.data.dhikrs.filter(d=>d.id!==id); render();
+  try{ await db.doc('dhikrs/'+id).delete(); }catch(e){}
+}
+
+/* ============ okuma/izleme klasörleri ============ */
+async function addFolderItemProgress(ftype, fid, itemId, delta, unit){
+  const conf = FOLDER_CONF[ftype];
+  const arr = ftype==='reading'?state.data.readingFolders:state.data.watchingFolders;
+  const folder = arr.find(f=>f.id===fid); if(!folder) return;
+  const item = folder.items.find(i=>i.id===itemId); if(!item) return;
+  const newVal = Math.min(item[conf.totalField]||0, (item[conf.doneField]||0)+delta);
+  const applied = newVal - (item[conf.doneField]||0);
+  item[conf.doneField] = newVal; render();
+  try{ await db.doc(`${conf.collection}/${fid}/items/${itemId}`).update({ [conf.doneField]:newVal }); }catch(e){ toast('Kaydedilemedi'); return; }
+  if(applied>0){
+    if(unit==='pages') setDay({ readingPages:(todayData().readingPages||0)+applied });
+    else setDay({ watchingMin:(todayData().watchingMin||0)+applied });
+  }
+}
+async function deleteFolder(ftype, id){
+  const conf = FOLDER_CONF[ftype];
+  if(ftype==='reading') state.data.readingFolders = state.data.readingFolders.filter(f=>f.id!==id);
+  else state.data.watchingFolders = state.data.watchingFolders.filter(f=>f.id!==id);
+  if(state.openFolder && state.openFolder.id===id) state.openFolder=null;
+  render();
+  try{ await db.doc(conf.collection+'/'+id).delete(); }catch(e){}
+}
+async function deleteItem(ftype, fid, id){
+  const conf = FOLDER_CONF[ftype];
+  const arr = ftype==='reading'?state.data.readingFolders:state.data.watchingFolders;
+  const folder = arr.find(f=>f.id===fid); if(!folder) return;
+  folder.items = folder.items.filter(i=>i.id!==id); render();
+  try{ await db.doc(`${conf.collection}/${fid}/items/${id}`).delete(); }catch(e){}
+}
+function estimateFinish(folder, unit){
+  const conf = unit==='pages'?FOLDER_CONF.reading:FOLDER_CONF.watching;
+  const total = folder.items.reduce((s,i)=>s+(i[conf.totalField]||0),0);
+  const done = folder.items.reduce((s,i)=>s+(i[conf.doneField]||0),0);
+  const remaining = total-done;
+  if(total===0) return 'Öğe eklenmedi';
+  if(remaining<=0) return 'Tamamlandı';
+  const elapsed = Math.max(1, daysBetween(folder.createdAt||todayStr(), todayStr()));
+  const rate = done/elapsed;
+  if(rate<=0) return 'Tahmin için veri yetersiz';
+  const daysLeft = Math.ceil(remaining/rate);
+  const target = addDays(todayStr(), daysLeft);
+  if(daysLeft>60) return `~${Math.round(daysLeft/30)} ay sonra (${formatTR(target)})`;
+  return `~${daysLeft} gün sonra (${formatTR(target)})`;
+}
+
+/* ============ muhasebe ============ */
+function formatTL(n){ return (Number(n)||0).toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' ₺'; }
+async function deleteExpense(id){
+  state.data.expenses = state.data.expenses.filter(e=>e.id!==id); render();
+  try{ await db.doc('expenses/'+id).delete(); }catch(e){}
+}
+async function deleteCategory(id){
+  state.data.categories = state.data.categories.filter(c=>c.id!==id); render();
+  try{ await db.doc('categories/'+id).delete(); }catch(e){}
+}
+function expenseSummary(){
+  const exps = state.data.expenses;
+  const ym = todayStr().slice(0,7), y = todayStr().slice(0,4);
+  let thisMonth=0, thisYear=0, allTime=0;
+  const catTotalsThisMonth={};
+  exps.forEach(e=>{
+    const amt = e.amount||0;
+    allTime += amt;
+    if(e.date && e.date.slice(0,4)===y) thisYear += amt;
+    if(e.date && e.date.slice(0,7)===ym){ thisMonth += amt; const k=e.categoryName||'Diğer'; catTotalsThisMonth[k]=(catTotalsThisMonth[k]||0)+amt; }
+  });
+  let topCategoryThisMonth=null, topVal=0;
+  Object.entries(catTotalsThisMonth).forEach(([k,v])=>{ if(v>topVal){ topVal=v; topCategoryThisMonth=k; } });
+  return { thisMonth, thisYear, allTime, topCategoryThisMonth };
+}
+function muhasebeStats(){
+  const exps = state.data.expenses;
+  const byCategory = {};
+  exps.forEach(e=>{ const k=e.categoryName||'Diğer'; byCategory[k]=(byCategory[k]||0)+(e.amount||0); });
+  const total = exps.reduce((s,e)=>s+(e.amount||0),0);
+  const catArr = Object.entries(byCategory).map(([name,amount])=>({name,amount,pct: total?amount/total:0})).sort((a,b)=>b.amount-a.amount);
+  const months=[];
+  for(let i=11;i>=0;i--){
+    const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()-i);
+    const ym = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+    const mtotal = exps.filter(e=>e.date && e.date.slice(0,7)===ym).reduce((s,e)=>s+(e.amount||0),0);
+    months.push({ ym, label: TR_MONTHS_SHORT[d.getMonth()], total: mtotal });
+  }
+  return { catArr, months, total, avgPerExpense: exps.length? total/exps.length:0, count: exps.length };
+}
+
+/* ============ ekleme modalleri ============ */
+function openAddBookModal(){
+  openModal(`
+    <div class="modal-head"><h3>Yeni Kitap</h3><button class="icon-btn" data-action="close-modal">${icon('close',16)}</button></div>
+    <form id="addBookForm">
+      <div><label class="label" for="mBookTitle">Kitap adı</label><input class="input" id="mBookTitle" required></div>
+      <div><label class="label" for="mBookTotal">Toplam sayfa</label><input class="input" id="mBookTotal" type="number" min="1" required></div>
+      <div><label class="label" for="mBookGoal">Günlük hedef (sayfa, opsiyonel)</label><input class="input" id="mBookGoal" type="number" min="1"></div>
+      <button class="btn btn-primary btn-block" type="submit">Ekle</button>
+    </form>`);
+  document.getElementById('addBookForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const title=document.getElementById('mBookTitle').value.trim();
+    const total=parseInt(document.getElementById('mBookTotal').value)||0;
+    const goal=parseInt(document.getElementById('mBookGoal').value)||null;
+    if(!title||total<=0) return;
+    closeModal();
+    const data={ title, totalPages:total, dailyGoal:goal, pagesRead:0, createdAt:todayStr() };
+    try{ const ref=await db.collection('books').add(data); state.data.books.push({id:ref.id,...data}); render(); }
+    catch(err){ toast('Kitap eklenemedi'); }
+  });
+}
+function openAddDhikrModal(){
+  openModal(`
+    <div class="modal-head"><h3>Yeni Zikir</h3><button class="icon-btn" data-action="close-modal">${icon('close',16)}</button></div>
+    <form id="addDhikrForm">
+      <div><label class="label" for="mDhName">Zikir adı</label><input class="input" id="mDhName" placeholder="Örn. İstiğfar" required></div>
+      <div><label class="label" for="mDhTarget">Günlük hedef (adet)</label><input class="input" id="mDhTarget" type="number" min="1" required></div>
+      <button class="btn btn-primary btn-block" type="submit">Ekle</button>
+    </form>`);
+  document.getElementById('addDhikrForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const name=document.getElementById('mDhName').value.trim();
+    const target=parseInt(document.getElementById('mDhTarget').value)||0;
+    if(!name||target<=0) return;
+    closeModal();
+    const data={ name, target, createdAt:todayStr() };
+    try{ const ref=await db.collection('dhikrs').add(data); state.data.dhikrs.push({id:ref.id,...data,todayCount:0}); render(); }
+    catch(err){ toast('Eklenemedi'); }
+  });
+}
+function openAddFolderModal(ftype){
+  const conf=FOLDER_CONF[ftype];
+  openModal(`
+    <div class="modal-head"><h3>Yeni Klasör</h3><button class="icon-btn" data-action="close-modal">${icon('close',16)}</button></div>
+    <form id="addFolderForm">
+      <div><label class="label" for="mFolderName">Klasör adı</label><input class="input" id="mFolderName" placeholder="${ftype==='reading'?'Örn. Risale-i Nur':'Örn. İmanın Şubeleri'}" required></div>
+      <button class="btn btn-primary btn-block" type="submit">Oluştur</button>
+    </form>`);
+  document.getElementById('addFolderForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const name=document.getElementById('mFolderName').value.trim();
+    if(!name) return;
+    closeModal();
+    const data={ name, createdAt:todayStr() };
+    try{
+      const ref=await db.collection(conf.collection).add(data);
+      const arr=ftype==='reading'?state.data.readingFolders:state.data.watchingFolders;
+      arr.push({id:ref.id,...data,items:[]}); render();
+    }catch(err){ toast('Eklenemedi'); }
+  });
+}
+function openAddItemModal(ftype, fid){
+  const conf=FOLDER_CONF[ftype];
+  openModal(`
+    <div class="modal-head"><h3>${ftype==='reading'?'Kitap':'Video'} Ekle</h3><button class="icon-btn" data-action="close-modal">${icon('close',16)}</button></div>
+    <form id="addItemForm">
+      <div><label class="label" for="mItemTitle">${conf.itemTitleLabel}</label><input class="input" id="mItemTitle" required></div>
+      <div><label class="label" for="mItemTotal">${conf.totalLabel}</label><input class="input" id="mItemTotal" type="number" min="1" required></div>
+      ${ftype==='watching'?`<div><label class="label" for="mItemLink">Video linki (opsiyonel)</label><input class="input" id="mItemLink" type="url" placeholder="https://..."></div>`:''}
+      <button class="btn btn-primary btn-block" type="submit">Ekle</button>
+    </form>`);
+  document.getElementById('addItemForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const title=document.getElementById('mItemTitle').value.trim();
+    const total=parseFloat(document.getElementById('mItemTotal').value)||0;
+    const link = ftype==='watching' ? (document.getElementById('mItemLink').value.trim()||null) : null;
+    if(!title||total<=0) return;
+    closeModal();
+    const data = ftype==='reading'
+      ? { title, totalPages:total, pagesRead:0, createdAt:todayStr() }
+      : { title, totalMinutes:total, minutesWatched:0, link, createdAt:todayStr() };
+    try{
+      const ref=await db.collection(`${conf.collection}/${fid}/items`).add(data);
+      const arr=ftype==='reading'?state.data.readingFolders:state.data.watchingFolders;
+      const folder=arr.find(f=>f.id===fid); folder.items.push({id:ref.id,...data}); render();
+    }catch(err){ toast('Eklenemedi'); }
+  });
+}
+function openBulkAddModal(ftype, fid){
+  const conf=FOLDER_CONF[ftype];
+  openModal(`
+    <div class="modal-head"><h3>Toplu Ekle</h3><button class="icon-btn" data-action="close-modal">${icon('close',16)}</button></div>
+    <p class="modal-hint">Her satıra bir öğe: <code>Başlık | ${conf.totalLabel}</code>${ftype==='watching'?' <span class="muted">(link için: Başlık | Süre | Link)</span>':''}</p>
+    <form id="bulkAddForm">
+      <textarea class="input textarea" id="bulkText" rows="8" placeholder="${ftype==='reading'?'1. Söz | 220\n2. Söz | 180':'Bölüm 1 | 45\nBölüm 2 | 38'}"></textarea>
+      <button class="btn btn-primary btn-block" type="submit">Ekle</button>
+    </form>`);
+  document.getElementById('bulkAddForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const text=document.getElementById('bulkText').value;
+    const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+    const items=[];
+    lines.forEach(line=>{
+      const parts=line.split('|').map(p=>p.trim());
+      if(parts.length>=2){
+        const title=parts[0]; const num=parseFloat(parts[1].replace(',','.')); const link=parts[2]||null;
+        if(title && !isNaN(num) && num>0) items.push({title,total:num,link});
+      }
+    });
+    if(items.length===0){ toast('Geçerli satır bulunamadı'); return; }
+    closeModal();
+    const arr=ftype==='reading'?state.data.readingFolders:state.data.watchingFolders;
+    const folder=arr.find(f=>f.id===fid);
+    for(const it of items){
+      const data = ftype==='reading'
+        ? { title:it.title, totalPages:it.total, pagesRead:0, createdAt:todayStr() }
+        : { title:it.title, totalMinutes:it.total, minutesWatched:0, link:it.link, createdAt:todayStr() };
+      try{ const ref=await db.collection(`${conf.collection}/${fid}/items`).add(data); folder.items.push({id:ref.id,...data}); }catch(err){}
+    }
+    render();
+    toast(`${items.length} öğe eklendi`);
+  });
+}
+
+function openAddExpenseModal(){
+  const cats = state.data.categories;
+  openModal(`
+    <div class="modal-head"><h3>Yeni Harcama</h3><button class="icon-btn" data-action="close-modal">${icon('close',16)}</button></div>
+    <form id="addExpenseForm">
+      <div><label class="label" for="mExpDate">Tarih</label><input class="input" id="mExpDate" type="date" value="${todayStr()}" required></div>
+      <div><label class="label" for="mExpAmount">Miktar (₺)</label><input class="input" id="mExpAmount" type="number" min="0.01" step="0.01" required></div>
+      <div><label class="label" for="mExpCategory">Kategori</label>
+        <select class="input" id="mExpCategory">
+          <option value="">— Seç —</option>
+          ${cats.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('')}
+        </select>
+      </div>
+      <div><label class="label" for="mExpNewCategory">veya yeni kategori oluştur</label><input class="input" id="mExpNewCategory" placeholder="Örn. Ulaşım"></div>
+      <button class="btn btn-primary btn-block" type="submit">Ekle</button>
+    </form>`);
+  document.getElementById('addExpenseForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const date = document.getElementById('mExpDate').value || todayStr();
+    const amount = parseFloat(document.getElementById('mExpAmount').value);
+    const newCatName = document.getElementById('mExpNewCategory').value.trim();
+    const selectedId = document.getElementById('mExpCategory').value;
+    if(!amount || amount<=0) return;
+    let categoryId = selectedId, categoryName = null;
+    if(newCatName){
+      try{
+        const ref = await db.collection('categories').add({ name:newCatName, createdAt:todayStr() });
+        categoryId = ref.id; categoryName = newCatName;
+        state.data.categories.push({id:ref.id, name:newCatName, createdAt:todayStr()});
+        state.data.categories.sort((a,b)=>(a.name||'').localeCompare(b.name||'','tr'));
+      }catch(err){ toast('Kategori eklenemedi'); return; }
+    } else if(selectedId){
+      const c = cats.find(x=>x.id===selectedId); categoryName = c ? c.name : 'Diğer';
+    } else { toast('Bir kategori seç ya da yeni kategori adı gir'); return; }
+    closeModal();
+    const data = { date, amount, categoryId, categoryName, createdAt: todayStr() };
+    try{
+      const ref = await db.collection('expenses').add(data);
+      state.data.expenses.push({id:ref.id, ...data});
+      state.data.expenses.sort((a,b)=>(b.date||'').localeCompare(a.date||'') || (b.createdAt||'').localeCompare(a.createdAt||''));
+      render();
+    }catch(err){ toast('Harcama eklenemedi'); }
+  });
+}
+function openManageCategoriesModal(){
+  openModal(`
+    <div class="modal-head"><h3>Kategoriler</h3><button class="icon-btn" data-action="close-modal">${icon('close',16)}</button></div>
+    <form id="addCategoryForm" style="display:flex;gap:8px;margin-bottom:16px;">
+      <input class="input" id="mNewCatName" placeholder="Yeni kategori adı" style="flex:1;">
+      <button class="btn btn-sm btn-primary" type="submit">Ekle</button>
+    </form>
+    <div class="item-list">
+    ${state.data.categories.length===0 ? '<p class="muted" style="font-size:13px;">Henüz kategori yok.</p>' : state.data.categories.map(c=>`
+      <div class="item-row" style="padding:9px 12px;">
+        <span class="item-title" style="font-size:13.5px;">${escapeHtml(c.name)}</span>
+        <button class="icon-btn" data-action="category-delete" data-id="${c.id}">${icon('trash',14)}</button>
+      </div>`).join('')}
+    </div>`);
+  document.getElementById('addCategoryForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const name = document.getElementById('mNewCatName').value.trim();
+    if(!name) return;
+    try{
+      const ref = await db.collection('categories').add({ name, createdAt:todayStr() });
+      state.data.categories.push({id:ref.id, name, createdAt:todayStr()});
+      state.data.categories.sort((a,b)=>(a.name||'').localeCompare(b.name||'','tr'));
+      openManageCategoriesModal();
+    }catch(err){ toast('Eklenemedi'); }
+  });
+}
+
+/* ============ istatistik hesaplamaları ============ */
+function avgFolderCompletion(folders, unit){
+  if(!folders.length) return 0;
+  const conf = unit==='pages'?FOLDER_CONF.reading:FOLDER_CONF.watching;
+  let total=0, done=0;
+  folders.forEach(f=>f.items.forEach(i=>{ total+=i[conf.totalField]||0; done+=i[conf.doneField]||0; }));
+  return total ? done/total : 0;
+}
+function computeStats(){
+  const days = state.data.allDays || {};
+  const keys = Object.keys(days);
+  const totalDaysSinceStart = Math.max(1, daysBetween(state.profile.startDate, todayStr())+1);
+  let sumBookPages=0, sportDone=0, newsDone=0, sumWritingMin=0, writingSessionsCount=0;
+  let sumQuranPages=0, sumWatchingMin=0;
+  let farzDone=0, farzTotal=0, sunnahDone=0, sunnahTotal=0;
+  const vakitler=['fajr','dhuhr','asr','maghrib','isha'];
+  keys.forEach(k=>{
+    const d=days[k];
+    sumBookPages += d.bookPages||0;
+    if(d.sport) sportDone++;
+    if(d.news) newsDone++;
+    sumWritingMin += d.writingMin||0;
+    writingSessionsCount += (d.writingSessions||[]).length;
+    sumQuranPages += d.quranPages||0;
+    sumWatchingMin += d.watchingMin||0;
+    const p=d.prayers||{};
+    vakitler.forEach(v=>{ farzTotal++; sunnahTotal++; if(p[v]&&p[v].farz) farzDone++; if(p[v]&&p[v].sunnah) sunnahDone++; });
+  });
+  return {
+    totalDaysSinceStart,
+    avgBookPages: sumBookPages/totalDaysSinceStart,
+    sportPct: sportDone/totalDaysSinceStart,
+    newsPct: newsDone/totalDaysSinceStart,
+    totalWritingMin: sumWritingMin,
+    writingSessionsCount,
+    avgQuranPages: sumQuranPages/totalDaysSinceStart,
+    avgWatchingMin: sumWatchingMin/totalDaysSinceStart,
+    farzPct: farzTotal? farzDone/farzTotal:0,
+    sunnahPct: sunnahTotal? sunnahDone/sunnahTotal:0,
+    readingCompletion: avgFolderCompletion(state.data.readingFolders,'pages'),
+    watchingCompletion: avgFolderCompletion(state.data.watchingFolders,'minutes')
+  };
+}
+function dhikrStats(){
+  const dhs = state.data.dhikrs;
+  let totalDaysMet=0, totalEntryDays=0, totalPulled=0, totalTargetSum=0;
+  dhs.forEach(dh=>{
+    const entries = dh.entries||{};
+    Object.values(entries).forEach(e=>{
+      totalEntryDays++;
+      totalPulled += e.count||0;
+      totalTargetSum += dh.target||0;
+      if(dh.target>0 && (e.count||0) >= dh.target) totalDaysMet++;
+    });
+  });
+  return { completionPct: totalEntryDays? totalDaysMet/totalEntryDays:0, pullPct: totalTargetSum? totalPulled/totalTargetSum:0 };
+}
+function kgScoreForDate(dt){
+  const d=state.data.allDays[dt]; if(!d) return 0;
+  let s=0; if(d.bookPages>0)s++; if(d.sport)s++; if(d.news)s++; if(d.writingMin>0)s++; return s;
+}
+function mvScoreForDate(dt){
+  const d=state.data.allDays[dt]; if(!d) return 0;
+  let s=0; const p=d.prayers||{};
+  if(['fajr','dhuhr','asr','maghrib','isha'].some(v=>p[v]&&p[v].farz)) s++;
+  if(d.quranPages>0) s++; if(d.dhikrCount>0) s++; if(d.readingPages>0) s++; if(d.watchingMin>0) s++;
+  return s;
+}
+function buildHeatmap(kind){
+  const max = kind==='kg'?4:5;
+  const days=[];
+  for(let i=364;i>=0;i--){
+    const dt=addDays(todayStr(),-i);
+    const score = kind==='kg'?kgScoreForDate(dt):mvScoreForDate(dt);
+    const level = score===0?0:Math.max(1, Math.round(score*4/max));
+    days.push({date:dt, score, level});
+  }
+  return days;
+}
+function heatStreak(days){
+  let c=0;
+  for(let i=days.length-1;i>=0;i--){ if(days[i].score>0) c++; else break; }
+  return c;
+}
+function heatmapMarkup(days, kind){
+  const cells = days.map(d=>`<div class="heat-cell heat-${kind} lvl-${d.level}" title="${formatTR(d.date)} · puan ${d.score}"></div>`).join('');
+  return `<div class="heatmap-scroll"><div class="heatmap-grid">${cells}</div></div>`;
+}
+function statTile(label, val){ return `<div class="stat-tile"><span class="stat-val">${val}</span><span class="stat-label">${label}</span></div>`; }
+function emptyState(title, sub){ return `<div class="empty-state"><h4>${escapeHtml(title)}</h4>${sub?`<p>${escapeHtml(sub)}</p>`:''}</div>`; }
+function miniStrip(getFn){
+  const dates = Array.from({length:7},(_,i)=>addDays(todayStr(),-(6-i)));
+  return `<div class="ministrip">${dates.map(d=>{
+    const on = getFn(state.data.recent[d]||{});
+    return `<span class="minidot ${on?'on':''}" title="${formatTR(d)}"></span>`;
+  }).join('')}</div>`;
+}
+
+/* ============ render: giriş ============ */
+function renderLogin(){
+  return `
+  <div class="login-screen">
+    <div class="login-card">
+      <div class="login-mark">PL</div>
+      <h1 class="login-title">Planlama</h1>
+      <p class="login-sub">Kişisel gelişimini ve maneviyatını tek yerde tut.</p>
+      <form id="loginForm">
+        <div><label class="label" for="nameInput">Ad Soyad</label><input class="input" id="nameInput" type="text" placeholder="Ad Soyad" autocomplete="name" required></div>
+        <button class="btn btn-primary btn-block" type="submit">Başla</button>
+      </form>
+    </div>
+  </div>`;
+}
+function wireLogin(){
+  document.getElementById('loginForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const name=document.getElementById('nameInput').value.trim();
+    if(!name) return;
+    const profile={ name, startDate: todayStr() };
+    state.profile=profile;
+    render();
+    loadAll();
+    try{ await db.doc('meta/profile').set(profile); }catch(err){ toast('Profil kaydedilemedi'); }
+  });
+}
+
+/* ============ render: kabuk ============ */
+function renderShell(){
+  return `
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">PL</span><span class="brand-name">Planlama</span></div>
+      <div class="greeting">Merhaba, <strong>${escapeHtml(state.profile.name)}</strong><br><span class="greet-date">${formatTR(todayStr())}</span></div>
+      <nav class="nav">
+        <button class="navitem ${state.view==='kg'?'active':''}" data-action="nav-kg">${icon('book')}<span>Kişisel Gelişim</span></button>
+        <button class="navitem ${state.view==='mv'?'active':''}" data-action="nav-mv">${icon('prayer')}<span>Maneviyat</span></button>
+        <button class="navitem ${state.view==='mb'?'active':''}" data-action="nav-mb">${icon('wallet')}<span>Muhasebe</span></button>
+        <button class="navitem ${state.view==='stats'?'active':''}" data-action="nav-stats">${icon('stats')}<span>İstatistikler</span></button>
+      </nav>
+      <div class="sidebar-foot">${dbAvailable?'':'<span class="badge-local">Yerel kayıt modu</span>'}</div>
+    </aside>
+    <main class="content">
+      <div class="mobile-topbar"><span class="brand-name">Planlama</span><span class="greet-date">${formatTR(todayStr())}</span></div>
+      ${state.loading ? `<div class="loading-block">Yükleniyor...</div>` : (state.view==='kg'?renderKG():state.view==='mv'?renderMV():state.view==='mb'?renderMuhasebe():renderStats())}
+    </main>
+    <nav class="bottomnav">
+      <button class="bnitem ${state.view==='kg'?'active':''}" data-action="nav-kg">${icon('book',18)}<span>Gelişim</span></button>
+      <button class="bnitem ${state.view==='mv'?'active':''}" data-action="nav-mv">${icon('prayer',18)}<span>Maneviyat</span></button>
+      <button class="bnitem ${state.view==='mb'?'active':''}" data-action="nav-mb">${icon('wallet',18)}<span>Muhasebe</span></button>
+      <button class="bnitem ${state.view==='stats'?'active':''}" data-action="nav-stats">${icon('stats',18)}<span>İstatistik</span></button>
+    </nav>
+  </div>`;
+}
+
+/* ============ render: Kişisel Gelişim ============ */
+function renderKG(){
+  return `
+  <div class="section" data-accent="kg">
+    <div class="section-head"><h2 class="section-title">Kişisel Gelişim</h2></div>
+    <div class="pillrow">
+      <button class="pill ${state.kgTab==='kitap'?'active':''}" data-action="kgtab-kitap">${icon('book',14)} Kitap</button>
+      <button class="pill ${state.kgTab==='spor'?'active':''}" data-action="kgtab-spor">${icon('dumbbell',14)} Spor</button>
+      <button class="pill ${state.kgTab==='yazma'?'active':''}" data-action="kgtab-yazma">${icon('pen',14)} Yazma</button>
+      <button class="pill ${state.kgTab==='haber'?'active':''}" data-action="kgtab-haber">${icon('newspaper',14)} Haber</button>
+    </div>
+    <div class="section-body">
+      ${state.kgTab==='kitap'?renderKitap():state.kgTab==='spor'?renderSpor():state.kgTab==='yazma'?renderYazma():renderHaber()}
+    </div>
+  </div>`;
+}
+function renderKitap(){
+  const books = state.data.books;
+  return `
+  <div class="toolbar"><button class="btn btn-primary" data-action="open-add-book">${icon('plus',15)} Yeni Kitap</button></div>
+  ${books.length===0 ? emptyState('Henüz kitap eklemedin.','İlk kitabını ekleyerek okuma takibine başla.') : `
+  <div class="grid cards-2">
+    ${books.map(b=>{
+      const pct = b.totalPages ? Math.min(100, Math.round((b.pagesRead||0)/b.totalPages*100)) : 0;
+      return `
+      <div class="card">
+        <div class="card-head"><h3>${escapeHtml(b.title)}</h3><button class="icon-btn" data-action="book-delete" data-id="${b.id}">${icon('trash',16)}</button></div>
+        <div class="progress"><div class="progress-bar" style="width:${pct}%"></div></div>
+        <div class="card-meta"><span>${b.pagesRead||0} / ${b.totalPages} sayfa</span><span>%${pct}</span></div>
+        <div class="card-meta"><span>Günlük hedef: ${b.dailyGoal||'—'} sayfa</span></div>
+        <div class="quickadd">
+          <input class="input input-sm" type="number" min="1" id="bookinput-${b.id}" placeholder="Bugün okunan sayfa">
+          <button class="btn btn-sm" data-action="book-add-pages" data-id="${b.id}">Ekle</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`}`;
+}
+function renderSpor(){
+  const d = todayData(); const done = d.sport===true; const not = d.sport===false;
+  return `
+  <div class="card card-wide">
+    <h3>Bugün spor yaptın mı?</h3>
+    <div class="toggle-row">
+      <button class="toggle-btn ${done?'active-yes':''}" data-action="set-sport" data-val="true">${icon('check',15)} Yapıldı</button>
+      <button class="toggle-btn ${not?'active-no':''}" data-action="set-sport" data-val="false">${icon('close',15)} Yapılmadı</button>
+    </div>
+    <div class="strip-label">Son 7 gün</div>
+    ${miniStrip(x=>!!x.sport)}
+  </div>`;
+}
+function renderHaber(){
+  const d = todayData(); const done = d.news===true; const not = d.news===false;
+  return `
+  <div class="card card-wide">
+    <h3>Bugün haberleri takip ettin mi?</h3>
+    <div class="toggle-row">
+      <button class="toggle-btn ${done?'active-yes':''}" data-action="set-news" data-val="true">${icon('check',15)} Yapıldı</button>
+      <button class="toggle-btn ${not?'active-no':''}" data-action="set-news" data-val="false">${icon('close',15)} Yapılmadı</button>
+    </div>
+    <div class="strip-label">Son 7 gün</div>
+    ${miniStrip(x=>!!x.news)}
+  </div>`;
+}
+function renderYazma(){
+  const d = todayData();
+  const sessions = d.writingSessions||[];
+  return `
+  <div class="card card-wide">
+    <h3>Yazma Disiplini</h3>
+    <div class="form-row">
+      <div><label class="label" for="writeGoal">Süre hedefi (dk)</label><input class="input" id="writeGoal" type="number" min="1" value="${timerState.goalMin||30}" ${timerState.running?'disabled':''}></div>
+      <div><label class="label" for="writeTopic">Konu / Başlık</label><input class="input" id="writeTopic" type="text" placeholder="Bugün ne yazıyorsun?" value="${escapeHtml(timerState.topic||'')}" ${timerState.running?'disabled':''}></div>
+    </div>
+    <div class="timer-display" id="timerDisplay">${formatTimer(timerState.remainingSec)}</div>
+    <div class="toggle-row" style="justify-content:center;">
+      ${!timerState.running
+        ? `<button class="btn btn-primary" data-action="writing-start">${icon('clock',15)} Başlat</button>`
+        : `<button class="btn btn-danger" data-action="writing-stop">${icon('close',15)} Bitir ve Kaydet</button>`}
+    </div>
+    <div class="stat-line">Bugün toplam: <strong>${d.writingMin||0} dk</strong></div>
+    ${sessions.length? `<div class="session-list">${sessions.slice().reverse().map(s=>`<div class="session-item"><span>${escapeHtml(s.topic||'—')}</span><span>${s.minutes} dk</span></div>`).join('')}</div>`:''}
+  </div>`;
+}
+
+/* ============ render: Maneviyat ============ */
+function renderMV(){
+  return `
+  <div class="section" data-accent="mv">
+    <div class="section-head"><h2 class="section-title">Maneviyat</h2></div>
+    <div class="pillrow">
+      <button class="pill ${state.mvTab==='namaz'?'active':''}" data-action="mvtab-namaz">${icon('prayer',14)} Namaz</button>
+      <button class="pill ${state.mvTab==='kuran'?'active':''}" data-action="mvtab-kuran">${icon('quran',14)} Kur'an</button>
+      <button class="pill ${state.mvTab==='zikir'?'active':''}" data-action="mvtab-zikir">${icon('beads',14)} Zikir</button>
+      <button class="pill ${state.mvTab==='okuma'?'active':''}" data-action="mvtab-okuma">${icon('folder-book',14)} Okumalar</button>
+      <button class="pill ${state.mvTab==='izleme'?'active':''}" data-action="mvtab-izleme">${icon('folder-play',14)} İzlemeler</button>
+    </div>
+    <div class="section-body">
+      ${state.mvTab==='namaz'?renderNamaz():state.mvTab==='kuran'?renderKuran():state.mvTab==='zikir'?renderZikir():state.mvTab==='okuma'?renderFolderSection('reading'):renderFolderSection('watching')}
+    </div>
+  </div>`;
+}
+function renderNamaz(){
+  const d = todayData();
+  const vakitler=[['fajr','Sabah'],['dhuhr','Öğle'],['asr','İkindi'],['maghrib','Akşam'],['isha','Yatsı']];
+  return `
+  <div class="card card-wide">
+    <h3>Bugünün Namazları</h3>
+    <div class="prayer-grid">
+      ${vakitler.map(([key,label])=>{
+        const v=(d.prayers&&d.prayers[key])||{farz:false,sunnah:false};
+        return `
+        <div class="prayer-row">
+          <span class="prayer-name">${label}</span>
+          <button class="chip ${v.farz?'chip-on':''}" data-action="toggle-prayer" data-vakit="${key}" data-tur="farz">Farz</button>
+          <button class="chip ${v.sunnah?'chip-on':''}" data-action="toggle-prayer" data-vakit="${key}" data-tur="sunnah">Sünnet</button>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+  <div class="card card-wide">
+    <h3>Son 7 Gün (Farz)</h3>
+    <div class="week-grid">
+      ${Array.from({length:7},(_,i)=>addDays(todayStr(),-(6-i))).map(dt=>{
+        const dd=state.data.recent[dt]||{}; const p=dd.prayers||{};
+        const cnt = vakitler.filter(([k])=>p[k]&&p[k].farz).length;
+        return `<div class="week-col"><div class="week-bar" style="height:${Math.max(3,cnt*11)}px" title="${cnt}/5 farz"></div><span class="week-day">${formatTRShort(dt)}</span></div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+function renderKuran(){
+  const d = todayData();
+  return `
+  <div class="card card-wide">
+    <h3>Kur'an-ı Kerim Takibi</h3>
+    <div class="stat-line">Bugün okunan: <strong>${d.quranPages||0} sayfa</strong></div>
+    <div class="quickadd">
+      <input class="input input-sm" type="number" min="1" id="quranInput" placeholder="Sayfa sayısı">
+      <button class="btn btn-sm btn-primary" data-action="add-quran">Ekle</button>
+    </div>
+    <div class="strip-label">Son 7 gün</div>
+    ${miniStrip(x=>!!x.quranPages)}
+  </div>`;
+}
+function renderZikir(){
+  const dhs = state.data.dhikrs;
+  return `
+  <div class="toolbar"><button class="btn btn-primary" data-action="open-add-dhikr">${icon('plus',15)} Yeni Zikir</button></div>
+  ${dhs.length===0 ? emptyState('Henüz zikir eklemedin.','Takip etmek istediğin bir zikri ekle.') : `
+  <div class="grid cards-2">
+    ${dhs.map(dh=>{
+      const pct = dh.target ? Math.min(100, Math.round((dh.todayCount||0)/dh.target*100)) : 0;
+      return `
+      <div class="card">
+        <div class="card-head"><h3>${escapeHtml(dh.name)}</h3><button class="icon-btn" data-action="dhikr-delete" data-id="${dh.id}">${icon('trash',16)}</button></div>
+        <div class="progress progress-mv"><div class="progress-bar" style="width:${pct}%"></div></div>
+        <div class="card-meta"><span>${dh.todayCount||0} / ${dh.target}</span><span>%${pct}</span></div>
+        <div class="quickadd">
+          <input class="input input-sm" type="number" min="1" id="dhikrinput-${dh.id}" placeholder="Çekilen adet">
+          <button class="btn btn-sm" data-action="dhikr-add-count" data-id="${dh.id}">Ekle</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`}`;
+}
+function renderFolderSection(ftype){
+  if(state.openFolder && state.openFolder.type===ftype) return renderFolderDetail(ftype, state.openFolder.id);
+  const conf = FOLDER_CONF[ftype];
+  const folders = ftype==='reading'?state.data.readingFolders:state.data.watchingFolders;
+  return `
+  <div class="toolbar"><button class="btn btn-primary" data-action="open-add-folder" data-ftype="${ftype}">${icon('plus',15)} Yeni Klasör</button></div>
+  ${folders.length===0 ? emptyState('Henüz klasör yok.', `Bir klasör oluşturup içine ${ftype==='reading'?'kitap':'video'} eklemeye başla.`) : `
+  <div class="grid cards-2">
+  ${folders.map(f=>{
+    const total=f.items.reduce((s,i)=>s+(i[conf.totalField]||0),0);
+    const done=f.items.reduce((s,i)=>s+(i[conf.doneField]||0),0);
+    const pct = total? Math.round(done/total*100):0;
+    const eta = estimateFinish(f, ftype==='reading'?'pages':'minutes');
+    return `
+    <div class="card folder-card" data-action="open-folder" data-ftype="${ftype}" data-id="${f.id}">
+      <div class="card-head"><h3>${icon(ftype==='reading'?'folder-book':'folder-play',17)} ${escapeHtml(f.name)}</h3>
+        <button class="icon-btn" data-action="folder-delete" data-ftype="${ftype}" data-id="${f.id}">${icon('trash',16)}</button></div>
+      <div class="progress progress-mv"><div class="progress-bar" style="width:${pct}%"></div></div>
+      <div class="card-meta"><span>${f.items.length} öğe · %${pct}</span></div>
+      <div class="card-meta eta">${eta}</div>
+    </div>`;
+  }).join('')}
+  </div>`}`;
+}
+function renderFolderDetail(ftype, folderId){
+  const conf = FOLDER_CONF[ftype];
+  const arr = ftype==='reading'?state.data.readingFolders:state.data.watchingFolders;
+  const folder = arr.find(f=>f.id===folderId);
+  if(!folder){ state.openFolder=null; return renderFolderSection(ftype); }
+  const total=folder.items.reduce((s,i)=>s+(i[conf.totalField]||0),0);
+  const done=folder.items.reduce((s,i)=>s+(i[conf.doneField]||0),0);
+  const pct = total? Math.round(done/total*100):0;
+  const eta = estimateFinish(folder, ftype==='reading'?'pages':'minutes');
+  return `
+  <div class="detail-head">
+    <button class="btn-back" data-action="back-to-folders" data-ftype="${ftype}">${icon('chevron-left',15)} Klasörler</button>
+    <h3>${escapeHtml(folder.name)}</h3>
+  </div>
+  <div class="card card-wide">
+    <div class="progress progress-mv"><div class="progress-bar" style="width:${pct}%"></div></div>
+    <div class="card-meta"><span>${done} / ${total} ${conf.unitLabel}</span><span>%${pct}</span></div>
+    <div class="card-meta eta">Tahmini bitiş: ${eta}</div>
+  </div>
+  <div class="toolbar">
+    <button class="btn btn-sm" data-action="open-add-item" data-ftype="${ftype}" data-fid="${folder.id}">${icon('plus',14)} ${ftype==='reading'?'Kitap':'Video'} Ekle</button>
+    <button class="btn btn-sm btn-ghost" data-action="open-bulk-add" data-ftype="${ftype}" data-fid="${folder.id}">Toplu Ekle</button>
+  </div>
+  ${folder.items.length===0 ? emptyState('Bu klasörde henüz öğe yok.','') : `
+  <div class="item-list">
+  ${folder.items.map(it=>{
+    const ipct = it[conf.totalField] ? Math.min(100, Math.round((it[conf.doneField]||0)/it[conf.totalField]*100)) : 0;
+    return `
+    <div class="item-row">
+      <div class="item-info">
+        <span class="item-title">${escapeHtml(it.title)}${it.link?` <a href="${escapeHtml(it.link)}" target="_blank" rel="noopener" class="item-link">${icon('chevron-right',12)}</a>`:''}</span>
+        <div class="progress progress-mv progress-thin"><div class="progress-bar" style="width:${ipct}%"></div></div>
+        <span class="item-meta">${it[conf.doneField]||0} / ${it[conf.totalField]} ${conf.unitLabel} · %${ipct}</span>
+      </div>
+      <div class="item-actions">
+        <input class="input input-xs" type="number" min="1" id="itemin-${it.id}" placeholder="${conf.unitLabel}">
+        <button class="btn btn-xs" data-action="item-add-progress" data-ftype="${ftype}" data-fid="${folder.id}" data-id="${it.id}">Ekle</button>
+        <button class="icon-btn" data-action="item-delete" data-ftype="${ftype}" data-fid="${folder.id}" data-id="${it.id}">${icon('trash',14)}</button>
+      </div>
+    </div>`;
+  }).join('')}
+  </div>`}`;
+}
+
+/* ============ render: Muhasebe ============ */
+function expenseRow(e){
+  return `
+  <div class="item-row">
+    <div class="item-info">
+      <span class="item-title">${escapeHtml(e.categoryName||'Diğer')}</span>
+      <span class="item-meta">${formatTR(e.date)}</span>
+    </div>
+    <div class="item-actions">
+      <span class="mono" style="font-weight:600;font-size:14px;">${formatTL(e.amount)}</span>
+      <button class="icon-btn" data-action="expense-delete" data-id="${e.id}">${icon('trash',14)}</button>
+    </div>
+  </div>`;
+}
+function renderMuhasebe(){
+  const s = expenseSummary();
+  const recent = state.data.expenses.slice(0,20);
+  return `
+  <div class="section" data-accent="mb">
+    <div class="section-head"><h2 class="section-title">Muhasebe</h2></div>
+    <div class="toolbar">
+      <button class="btn btn-primary" data-action="open-add-expense">${icon('plus',15)} Yeni Harcama</button>
+      <button class="btn btn-ghost btn-sm" data-action="open-manage-categories">Kategorileri Yönet</button>
+    </div>
+    <div class="grid stat-grid" style="margin-bottom:20px;">
+      ${statTile('Bu ay toplam', formatTL(s.thisMonth))}
+      ${statTile('Bu yıl toplam', formatTL(s.thisYear))}
+      ${statTile('Tüm zamanlar', formatTL(s.allTime))}
+      ${statTile('Bu ay en çok', s.topCategoryThisMonth || '—')}
+    </div>
+    ${recent.length===0 ? emptyState('Henüz harcama eklemedin.','İlk harcamanı ekleyerek takibe başla.') : `
+    <div class="item-list">${recent.map(e=>expenseRow(e)).join('')}</div>
+    ${state.data.expenses.length>20?`<p class="muted" style="margin-top:12px;font-size:12.5px;">Son 20 harcama gösteriliyor. Tüm dönem analizi İstatistikler sayfasında.</p>`:''}`}
+  </div>`;
+}
+
+/* ============ render: İstatistikler ============ */
+function renderStats(){
+  if(!state.statsLoaded) return `<div class="section"><div class="loading-block">İstatistikler yükleniyor...</div></div>`;
+  const s = computeStats(); const dz = dhikrStats();
+  const kgHeat = buildHeatmap('kg'); const mvHeat = buildHeatmap('mv');
+  return `
+  <div class="section">
+    <div class="section-head"><h2 class="section-title">İstatistikler</h2><p class="section-sub">${formatTR(state.profile.startDate)} tarihinden bu yana ${s.totalDaysSinceStart} gün</p></div>
+
+    <h3 class="stats-subhead accent-kg">${icon('book',16)} Kişisel Gelişim</h3>
+    <div class="grid stat-grid">
+      ${statTile('Günlük ort. kitap sayfası', s.avgBookPages.toFixed(1))}
+      ${statTile('Spor yapma oranı', pctFmt(s.sportPct))}
+      ${statTile('Haber takip oranı', pctFmt(s.newsPct))}
+      ${statTile('Toplam yazma süresi', s.totalWritingMin+' dk')}
+      ${statTile('Yazma oturumu', s.writingSessionsCount+' adet')}
+    </div>
+    <div class="heat-block">
+      ${heatmapMarkup(kgHeat,'kg')}
+      <div class="heat-foot">Güncel seri: <strong>${heatStreak(kgHeat)} gün</strong></div>
+    </div>
+
+    <h3 class="stats-subhead accent-mv">${icon('prayer',16)} Maneviyat</h3>
+    <div class="grid stat-grid">
+      ${statTile('Farz namaz oranı', pctFmt(s.farzPct))}
+      ${statTile('Sünnet namaz oranı', pctFmt(s.sunnahPct))}
+      ${statTile("Günlük ort. Kur'an sayfası", s.avgQuranPages.toFixed(1))}
+      ${statTile('Zikir hedefi tamamlama', pctFmt(dz.completionPct))}
+      ${statTile('Zikir çekme oranı', pctFmt(dz.pullPct))}
+      ${statTile('Okuma klasörleri tamamlanma', pctFmt(s.readingCompletion))}
+      ${statTile('İzleme klasörleri tamamlanma', pctFmt(s.watchingCompletion))}
+      ${statTile('Günlük ort. izleme süresi', s.avgWatchingMin.toFixed(1)+' dk')}
+    </div>
+    <div class="heat-block">
+      ${heatmapMarkup(mvHeat,'mv')}
+      <div class="heat-foot">Güncel seri: <strong>${heatStreak(mvHeat)} gün</strong></div>
+    </div>
+
+    ${renderMuhasebeStats()}
+  </div>`;
+}
+function renderMuhasebeStats(){
+  const mb = muhasebeStats();
+  const maxMonth = Math.max(1, ...mb.months.map(m=>m.total));
+  return `
+    <h3 class="stats-subhead accent-mb">${icon('wallet',16)} Muhasebe</h3>
+    <div class="grid stat-grid">
+      ${statTile('Toplam harcama', formatTL(mb.total))}
+      ${statTile('Harcama sayısı', mb.count+' adet')}
+      ${statTile('Ortalama harcama', formatTL(mb.avgPerExpense))}
+      ${statTile('Kategori sayısı', state.data.categories.length+' adet')}
+    </div>
+    <div class="card card-wide">
+      <h3>Kategoriye Göre Dağılım</h3>
+      ${mb.catArr.length===0 ? emptyState('Henüz harcama yok.','') : mb.catArr.map(c=>`
+        <div class="cat-row">
+          <div class="cat-row-head"><span>${escapeHtml(c.name)}</span><span>${formatTL(c.amount)} · %${Math.round(c.pct*100)}</span></div>
+          <div class="progress progress-mb"><div class="progress-bar" style="width:${Math.round(c.pct*100)}%"></div></div>
+        </div>`).join('')}
+    </div>
+    <div class="card card-wide">
+      <h3>Son 12 Ay</h3>
+      <div class="week-grid" style="height:90px;">
+        ${mb.months.map(m=>`<div class="week-col"><div class="week-bar bar-mb" style="height:${Math.max(3,Math.round(m.total/maxMonth*80))}px" title="${m.label}: ${formatTL(m.total)}"></div><span class="week-day">${m.label}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* ============ ana render ============ */
+function render(){
+  const app = document.getElementById('app');
+  if(!state.profile){ app.innerHTML = renderLogin(); wireLogin(); return; }
+  app.innerHTML = renderShell();
+}
+
+/* ============ olay yönetimi (event delegation) ============ */
+function onAppClick(e){
+  const el = e.target.closest('[data-action]');
+  if(!el) return;
+  const action = el.getAttribute('data-action');
+  const id = el.getAttribute('data-id');
+  const ftype = el.getAttribute('data-ftype');
+  const fid = el.getAttribute('data-fid');
+  switch(action){
+    case 'nav-kg': state.view='kg'; render(); break;
+    case 'nav-mv': state.view='mv'; render(); break;
+    case 'nav-mb': state.view='mb'; render(); break;
+    case 'nav-stats': state.view='stats'; render(); loadStats(); break;
+    case 'kgtab-kitap': state.kgTab='kitap'; render(); break;
+    case 'kgtab-spor': state.kgTab='spor'; render(); break;
+    case 'kgtab-yazma': state.kgTab='yazma'; render(); break;
+    case 'kgtab-haber': state.kgTab='haber'; render(); break;
+    case 'mvtab-namaz': state.mvTab='namaz'; state.openFolder=null; render(); break;
+    case 'mvtab-kuran': state.mvTab='kuran'; state.openFolder=null; render(); break;
+    case 'mvtab-zikir': state.mvTab='zikir'; state.openFolder=null; render(); break;
+    case 'mvtab-okuma': state.mvTab='okuma'; state.openFolder=null; render(); break;
+    case 'mvtab-izleme': state.mvTab='izleme'; state.openFolder=null; render(); break;
+    case 'open-add-book': openAddBookModal(); break;
+    case 'book-add-pages': { const inp=document.getElementById('bookinput-'+id); const val=parseInt(inp.value)||0; if(val>0) addBookPages(id,val); break; }
+    case 'book-delete': confirmAction('Bu kitabı silmek istiyor musun?', ()=>deleteBook(id)); break;
+    case 'set-sport': setSport(el.getAttribute('data-val')==='true'); break;
+    case 'set-news': setNews(el.getAttribute('data-val')==='true'); break;
+    case 'writing-start': startWriting(); break;
+    case 'writing-stop': stopWriting(); break;
+    case 'toggle-prayer': togglePrayer(el.getAttribute('data-vakit'), el.getAttribute('data-tur')); break;
+    case 'add-quran': { const inp=document.getElementById('quranInput'); const val=parseInt(inp.value)||0; addQuranPages(val); break; }
+    case 'open-add-dhikr': openAddDhikrModal(); break;
+    case 'dhikr-add-count': { const inp=document.getElementById('dhikrinput-'+id); const val=parseInt(inp.value)||0; if(val>0) addDhikrCount(id,val); break; }
+    case 'dhikr-delete': confirmAction('Bu zikri silmek istiyor musun?', ()=>deleteDhikr(id)); break;
+    case 'open-add-folder': openAddFolderModal(ftype); break;
+    case 'open-folder': state.openFolder={type:ftype,id}; render(); break;
+    case 'back-to-folders': state.openFolder=null; render(); break;
+    case 'folder-delete': confirmAction('Bu klasörü ve içindeki tüm öğeleri silmek istiyor musun?', ()=>deleteFolder(ftype,id)); break;
+    case 'open-add-item': openAddItemModal(ftype,fid); break;
+    case 'open-bulk-add': openBulkAddModal(ftype,fid); break;
+    case 'item-add-progress': { const inp=document.getElementById('itemin-'+id); const val=parseFloat((inp.value||'').replace(',','.'))||0; if(val>0) addFolderItemProgress(ftype,fid,id,val, ftype==='reading'?'pages':'minutes'); break; }
+    case 'item-delete': confirmAction('Bu öğeyi silmek istiyor musun?', ()=>deleteItem(ftype,fid,id)); break;
+    case 'open-add-expense': openAddExpenseModal(); break;
+    case 'open-manage-categories': openManageCategoriesModal(); break;
+    case 'expense-delete': confirmAction('Bu harcamayı silmek istiyor musun?', ()=>deleteExpense(id)); break;
+    case 'category-delete': confirmAction('Bu kategoriyi silmek istiyor musun? (geçmiş harcamalar etkilenmez)', ()=>deleteCategory(id)); break;
+    case 'close-modal': closeModal(); break;
+    case 'confirm-yes': if(_confirmCb) _confirmCb(); closeModal(); _confirmCb=null; break;
+    case 'confirm-no': closeModal(); _confirmCb=null; break;
+  }
+}
+document.getElementById('app').addEventListener('click', onAppClick);
+document.getElementById('modalRoot').addEventListener('click', onAppClick);
+
+/* ============ başlangıç ============ */
+(async function boot(){
+  await initCapabilities();
+  await loadAll();
+})();
+</script>
+
