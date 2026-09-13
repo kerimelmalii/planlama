@@ -1,4 +1,18 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Planlama</title>
+<meta name="description" content="Kişisel gelişim, maneviyat ve muhasebe takibini tek yerde toplayan planlama uygulaması.">
+<meta name="theme-color" content="#3B6E71">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Planlama">
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
 <style>
 :root{
@@ -217,6 +231,9 @@ button{ cursor:pointer; }
 .heat-foot strong{ color:var(--text); font-family:var(--font-mono); }
 </style>
 
+
+</head>
+<body>
 <div id="app"></div>
 <div id="modalRoot"></div>
 <div id="toastRoot" class="toast-root"></div>
@@ -1335,3 +1352,15 @@ document.getElementById('modalRoot').addEventListener('click', onAppClick);
 })();
 </script>
 
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+
+</body>
+</html>
